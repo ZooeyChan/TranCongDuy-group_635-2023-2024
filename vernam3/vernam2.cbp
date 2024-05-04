@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="vernam2" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/vernam2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/vernam2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="analysis_code.txt" />
+		<Unit filename="analysis_key.txt" />
+		<Unit filename="analysis_plain.txt" />
+		<Unit filename="bigrams.txt" />
+		<Unit filename="code.txt" />
+		<Unit filename="decode.txt" />
+		<Unit filename="functions.cpp" />
+		<Unit filename="header.h" />
+		<Unit filename="key" />
+		<Unit filename="main.cpp" />
+		<Unit filename="outFile.txt" />
+		<Unit filename="plain.txt" />
+		<Unit filename="plain_viet.txt" />
+		<Unit filename="tabs.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

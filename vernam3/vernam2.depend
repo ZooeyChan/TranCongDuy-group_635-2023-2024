@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1695845238 source:/home/duy/My Projects/Crypto/vernam2/main.cpp
+	"header.h"
+
+1695846135 /home/duy/My Projects/Crypto/vernam2/header.h
+	<bits/stdc++.h>
+
+1695846111 source:/home/duy/My Projects/Crypto/vernam2/functions.cpp
+	"header.h"
+
+1695845940 source:/home/duy/My Projects/Crypto/vernam2/tabs.cpp
+	"header.h"
+
+1712943087 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
+	"header.h"
+
+1712604246 /home/duy/My Projects/Crypto/vernam3/header.h
+	<iostream>
+	<fstream>
+	<algorithm>
+	<numeric>
+	<vector>
+	<bitset>
+	<map>
+	<random>
+	<limits>
+	<chrono>
+	<stdlib.h>
+	<iomanip>
+
+1696713565 source:/home/duy/My Projects/Crypto/vernam3/tabs.cpp
+	"header.h"
+
+1712946879 source:/home/duy/My Projects/Crypto/vernam3/main.cpp
+	"header.h"
+
