@@ -42,6 +42,7 @@
 		<Unit filename="header.h" />
 		<Unit filename="key" />
 		<Unit filename="main.cpp" />
+		<Unit filename="monograms.h" />
 		<Unit filename="outFile.txt" />
 		<Unit filename="pcg_extras.hpp" />
 		<Unit filename="pcg_random.hpp" />
@@ -49,6 +50,7 @@
 		<Unit filename="plain.txt" />
 		<Unit filename="plain_viet.txt" />
 		<Unit filename="tabs.cpp" />
+		<Unit filename="tetragrams.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

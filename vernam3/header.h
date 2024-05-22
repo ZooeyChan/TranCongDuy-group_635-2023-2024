@@ -17,6 +17,7 @@
 #include "pcg_uint128.hpp"
 #include "pcg_extras.hpp"
 
+#define MAXTEXTLEN 10000
 #define BIT 7
 #define CHARS ((1 << BIT) - 1)
 

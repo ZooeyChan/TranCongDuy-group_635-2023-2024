@@ -1,4 +1,6 @@
 #include "header.h"
+#include "monograms.h"
+#include "tetragrams.h"
 
 ull Count = 0;
 ull Sum = 0;
@@ -343,7 +345,7 @@ void decrypt(const string &codeFile, const string &outFile, vector<array<wchar_t
 
 size_t round_off(double N, const double &n) {
     int h;
-    double l, a, b, c, d, e, i, j, m, f, g;
+    double b, c, d, e, i, j, m, f;
     b = N;
     c = floor(N);
     for (i = 0; b >= 1; ++i) b = b / 10;
@@ -402,73 +404,115 @@ void codeAnalysis(const string& fileInput, const string& fileOutput, ull &Count,
     outputFile.close();
     }
 
-/*---------------------DEMO-----------------------------*/
-// Plaintext fitness (dummy function)
-double fitness(const string& plaintext) {
-    // Count number of common words
-    return static_cast<double>(count(plaintext.begin(), plaintext.end(), 'e'));
-    }
-
-// Decrypt the ciphertext using the key
-string decipher(const string& ciphertext, const vector<string>& key) {
-    string plaintext = ciphertext;
-    int m = key.size();
-    for (size_t i = 0; i < ciphertext.size(); ++i) {
-        int pos = ciphertext[i] - 'A';
-        plaintext[i] = key[i % m][pos];
+/*---------------------DEMO FOR ENGLISH -----------------------------*/
+wchar_t bitToChar(const bitset<BIT>& b) {
+    for (const auto& pair : mpCharBit) {
+        if (pair.second == b) {
+            return pair.first;
+            }
         }
-    return plaintext;
+    return L'?'; // Default character if bitset not found
     }
 
-// Generate a random key
-vector<string> randomKey(int m) {
-    vector<string> key(m, string(26, ' '));
-    for (int i = 0; i < m; ++i) {
-        string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        random_shuffle(alphabet.begin(), alphabet.end());
-        key[i] = alphabet;
+// Text relevance, based on tetragram frequency
+double fitness(const char* text) {
+    extern double tetragrams[];
+    int length, dem = 0;
+    double result = 0.0;
+
+    length = strlen(text);
+    for (int i = 0; i < length - 3; i++) {
+        result += tetragrams[(text[i + 0] - 'A') * 26 * 26 * 26
+                                                 + (text[i + 1] - 'A') * 26 * 26
+                                                 + (text[i + 2] - 'A') * 26
+                                                 + (text[i + 3] - 'A')];
+        dem++;
         }
-    return key;
+    return result / dem;
     }
 
-// Function to implement the decoding algorithm
-vector<string> hillClimbingAttack(const string& ciphertext, int m, int maxBigCounter) {
-    srand(time(nullptr));
-    // Initialize variables
-    int bigCounter = 0;
-    double bestFitness = fitness(ciphertext); // Fitness of the codex
-    vector<string> parentKey = randomKey(m);
-    vector<string> bestKey = parentKey;
-    while (bigCounter < maxBigCounter) {
-        for (int i = 0; i < m; ++i) {
-            // Randomize the ith key alphabet
-            vector<string> childKey = parentKey;
-            string& keyAlphabet = childKey[i];
-            random_shuffle(keyAlphabet.begin(), keyAlphabet.end());
-            string plaintext = decipher(ciphertext, parentKey);
-            double parentFitness = fitness(plaintext);
-            int littleCounter = 0;
-            while (littleCounter < 1000) {
-                vector<string> tempKey = childKey;
-                swap(tempKey[i][rand() % 26], tempKey[i][rand() % 26]);
-                string tempPlaintext = decipher(ciphertext, tempKey);
-                double childFitness = fitness(tempPlaintext);
-                if (childFitness > parentFitness) {
-                    parentKey = tempKey;
-                    parentFitness = childFitness;
-                    littleCounter = 0;
-                    }
-                else {
-                    ++littleCounter;
-                    }
-                if (childFitness > bestFitness) {
-                    bestFitness = childFitness;
-                    bestKey = tempKey;
-                    bigCounter = 0;
-                    }
+// Decryption function for XOR-based encryption
+void decrypt(const wchar_t* c, wchar_t* p, const wchar_t* key) {
+    int length = wcslen(c);
+    for (int i = 0; i < length; i++) {
+        bitset<BIT> c_bit = mpCharBit[c[i]];
+        bitset<BIT> k_bit = mpCharBit[key[i]];
+        bitset<BIT> p_bit = c_bit ^ k_bit;
+        p[i] = bitToChar(p_bit);
+        }
+    p[length] = L'\0';
+    }
+
+// Generate a random key of the same length as the text
+void random_key(wchar_t* key, int length) {
+    vector<wchar_t> chars;
+    for (const auto& pair : mpCharBit) {
+        chars.push_back(pair.first);
+        }
+    for (int i = 0; i < length; i++) {
+        key[i] = chars[rand() % chars.size()];
+        }
+    }
+
+// Copy key
+void copy_key(const wchar_t* source, wchar_t* target, int length) {
+    for (int i = 0; i < length; i++) {
+        target[i] = source[i];
+        }
+    }
+
+void hill_climbing_attack(const wchar_t* ciphertext) {
+    wchar_t parent_key[MAXTEXTLEN];
+    wchar_t child_key[MAXTEXTLEN];
+    wchar_t plaintext[MAXTEXTLEN];
+    wchar_t best_plaintext[MAXTEXTLEN];
+    wchar_t best_key[MAXTEXTLEN];
+    double parent_fitness, child_fitness, best_fitness;
+    long int count, bigcount = 0;
+    int length = wcslen(ciphertext);
+
+    random_key(parent_key, length);
+    decrypt(ciphertext, plaintext, parent_key);
+    best_fitness = fitness(reinterpret_cast<char*>(plaintext));
+
+    while (bigcount < 1000000) {
+        random_key(parent_key, length);
+        decrypt(ciphertext, plaintext, parent_key);
+        parent_fitness = fitness(reinterpret_cast<char*>(plaintext));
+        count = 0;
+        while (count < 1000) {
+            copy_key(parent_key, child_key, length);
+            int pos = rand() % length;
+            child_key[pos] = mpCharBit.begin()->first; // Randomly change a character in the key
+            decrypt(ciphertext, plaintext, child_key);
+            child_fitness = fitness(reinterpret_cast<char*>(plaintext));
+            if (child_fitness > parent_fitness) {
+                copy_key(child_key, parent_key, length);
+                parent_fitness = child_fitness;
+                count = 0;
+                }
+            else {
+                count++;
+                }
+            if (child_fitness > best_fitness) {
+                copy_key(child_key, best_key, length);
+                best_fitness = child_fitness;
+                bigcount = 0;
+                wcscpy(best_plaintext, plaintext);
+                }
+            else {
+                bigcount++;
                 }
             }
-        ++bigCounter;
         }
-    return bestKey;
+    wcout << best_plaintext << endl;
+    wcout << L"Key: " << best_key << endl;
+    wcout << L"Fitness: " << best_fitness << endl;
     }
+
+//int main() {
+//    wchar_t ciphertext[MAXTEXTLEN] = L"ciphertext_here";
+//    srand(time(0));
+//    hill_climbing_attack(ciphertext);
+//    return 0;
+//    }

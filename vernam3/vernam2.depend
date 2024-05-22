@@ -11,10 +11,12 @@
 1695845940 source:/home/duy/My Projects/Crypto/vernam2/tabs.cpp
 	"header.h"
 
-1716389510 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
+1716402937 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
 	"header.h"
+	"monograms.h"
+	"tetragrams.h"
 
-1714820387 /home/duy/My Projects/Crypto/vernam3/header.h
+1716402443 /home/duy/My Projects/Crypto/vernam3/header.h
 	<iostream>
 	<fstream>
 	<algorithm>
@@ -78,4 +80,8 @@
 	<initializer_list>
 	<type_traits>
 	<intrin.h>
+
+1702324321 /home/duy/My Projects/Crypto/vernam3/monograms.h
+
+1702324335 /home/duy/My Projects/Crypto/vernam3/tetragrams.h
 
