@@ -59,6 +59,30 @@ void toVieAlpb(const string& fileInput, const string& fileOutput) {
     out.close();
     }
 
+//void gen_vernam_key_pcg(const string& fileOutput, ull Count, const int &posNum) {
+//    ofstream out(fileOutput, ios::binary | ios::trunc);
+//    pcg32 rng(pcg_extras::seed_seq_from<random_device>());
+//    uniform_int_distribution<uint8_t> distribution(0, CHARS);
+//    uint8_t ch;
+//    int temp;
+//    int pos[posNum];
+//    // Sinh số ngẫu nhiên cho vị trí bit
+//    for (int i = 0; i < posNum; i++) {
+//        pos[i] = rng() % 7;
+//        cout << pos[i] << " ";
+//        }
+//    // Sinh khóa ngẫu nhiên
+//    while (Count--) {
+//        ch = distribution(rng);
+//        temp = posNum;
+//        for (int i = 0; i < posNum; i++) {
+//            ch &= ~(1 << pos[i]);
+//            }
+//        out.write(reinterpret_cast<const char*>(&ch), sizeof(uint8_t));
+//        }
+//    out.close();
+//    }
+
 void gen_vernam_key_rand(const string& fileOutput, ull Count, const int &posNum) {
     ofstream out(fileOutput, ios::binary | ios::trunc);
     random_device rd;
@@ -68,12 +92,13 @@ void gen_vernam_key_rand(const string& fileOutput, ull Count, const int &posNum)
     int temp;
     int pos[posNum];
     for(int i = 0; i < posNum; i++) {
-        pos[i] = gen() % 7;
+        pos[i] = gen() % 7; // Generate random numbers from 0 to 6
         cout << pos[i] << " ";
         }
     while (Count--) {
         ch = distribution(gen);
         temp = posNum;
+        // Set the bit at posNum (position) to 0
         for (int i = 0; i < posNum; i++) {
             ch &= ~(1 << pos[i]);
             }
@@ -239,13 +264,13 @@ void assignMap(const size_t &stride, map<wchar_t, bitset<BIT> > &tmp) {
         for (size_t i = 0; i < stride && index < symbols.size(); ++i) {
             wchar_t key = symbols[index];
             tmp[key] = mpCharBit.at(key);
-            ++index;
+            ++index; // Increase index by 1 after each iteration
             }
-        index += stride;
+        index += stride; // Bỏ qua stride phần tử tiếp theo
         }
     }
 
-// Hàm kiểm tra xem một mã đã được sử dụng chưa
+// Function to check if a code has been used
 bool isUsed(const vector<array<wchar_t, 128> >& climbMatrix, wchar_t code, int index) {
     for (int i = 0; i < index; ++i) {
         if (climbMatrix[i][code] == code)
@@ -254,7 +279,7 @@ bool isUsed(const vector<array<wchar_t, 128> >& climbMatrix, wchar_t code, int i
     return false;
     }
 
-// Hàm tính toán tổng số lần xuất hiện của các cặp bigrams
+// Function to calculate the total number of occurrences of pairs of bigrams
 ull computeScore(const vector<array<wchar_t, 128> >& climbMatrix,
                  const multimap<ull, pair<wchar_t, wchar_t>, decltype(&compare)>& map_bigrams) {
     ull score = 0;
@@ -269,6 +294,18 @@ ull computeScore(const vector<array<wchar_t, 128> >& climbMatrix,
 
 void decrypt(const string &codeFile, const string &outFile, vector<array<wchar_t, 128> >& climbMatrix) {
     map<wchar_t, bitset<BIT> > tmp;
+//    size_t startKey = 0;
+//    size_t endKey = 31;
+//    for (size_t i = startKey; i <= endKey; ++i) {
+//        wchar_t key = symbols[i];
+//        tmp[key] = mpCharBit[key];
+//        }
+//    startKey = 63;
+//    endKey = 95;
+//    for (size_t i = startKey; i <= endKey; ++i) {
+//        wchar_t key = symbols[i];
+//        tmp[key] = mpCharBit[key];
+//        }
     // stride = 2^pos, pos: position ignored in gamma.
     assignMap(32, tmp);
     wifstream in(codeFile);
@@ -365,35 +402,73 @@ void codeAnalysis(const string& fileInput, const string& fileOutput, ull &Count,
     outputFile.close();
     }
 
-void hillClimbing(const multimap<ull, pair<wchar_t, wchar_t>, decltype(&compare)> &map_bigrams,
-                  const vector<array<wchar_t, 128> >& climbMatrix) {
-    ull bestScore = computeScore(climbMatrix, map_bigrams);
-    vector<array<wchar_t, 128> > tempMatrix = climbMatrix;
-    vector<array<wchar_t, 128> > bestMatrix = climbMatrix;
-    for (int i = 0; i < 128; ++i) {
-        for (int ii = 0; ii < climbMatrix.size(); ii++) {
-            for (wchar_t j = L' '; j <= L'ỹ'; ++j) {
-                if (!isUsed(climbMatrix, j, ii)) {
-                    tempMatrix[ii][i] = j;
-                    ull newScore = computeScore(tempMatrix, map_bigrams);
-                    if (newScore > bestScore) {
-                        bestScore = newScore;
-                        bestMatrix = tempMatrix;
-                        }
-                    tempMatrix[ii][i] = L' ';
+/*---------------------DEMO-----------------------------*/
+// Plaintext fitness (dummy function)
+double fitness(const string& plaintext) {
+    // Count number of common words
+    return static_cast<double>(count(plaintext.begin(), plaintext.end(), 'e'));
+    }
+
+// Decrypt the ciphertext using the key
+string decipher(const string& ciphertext, const vector<string>& key) {
+    string plaintext = ciphertext;
+    int m = key.size();
+    for (size_t i = 0; i < ciphertext.size(); ++i) {
+        int pos = ciphertext[i] - 'A';
+        plaintext[i] = key[i % m][pos];
+        }
+    return plaintext;
+    }
+
+// Generate a random key
+vector<string> randomKey(int m) {
+    vector<string> key(m, string(26, ' '));
+    for (int i = 0; i < m; ++i) {
+        string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        random_shuffle(alphabet.begin(), alphabet.end());
+        key[i] = alphabet;
+        }
+    return key;
+    }
+
+// Function to implement the decoding algorithm
+vector<string> hillClimbingAttack(const string& ciphertext, int m, int maxBigCounter) {
+    srand(time(nullptr));
+    // Initialize variables
+    int bigCounter = 0;
+    double bestFitness = fitness(ciphertext); // Fitness of the codex
+    vector<string> parentKey = randomKey(m);
+    vector<string> bestKey = parentKey;
+    while (bigCounter < maxBigCounter) {
+        for (int i = 0; i < m; ++i) {
+            // Randomize the ith key alphabet
+            vector<string> childKey = parentKey;
+            string& keyAlphabet = childKey[i];
+            random_shuffle(keyAlphabet.begin(), keyAlphabet.end());
+            string plaintext = decipher(ciphertext, parentKey);
+            double parentFitness = fitness(plaintext);
+            int littleCounter = 0;
+            while (littleCounter < 1000) {
+                vector<string> tempKey = childKey;
+                swap(tempKey[i][rand() % 26], tempKey[i][rand() % 26]);
+                string tempPlaintext = decipher(ciphertext, tempKey);
+                double childFitness = fitness(tempPlaintext);
+                if (childFitness > parentFitness) {
+                    parentKey = tempKey;
+                    parentFitness = childFitness;
+                    littleCounter = 0;
+                    }
+                else {
+                    ++littleCounter;
+                    }
+                if (childFitness > bestFitness) {
+                    bestFitness = childFitness;
+                    bestKey = tempKey;
+                    bigCounter = 0;
                     }
                 }
             }
+        ++bigCounter;
         }
-    wofstream out("outFile.txt", ios::app);
-    if (!out.is_open()) {
-        cerr << "Output file error!!!" << endl;
-        return;
-        }
-    out << "Best encoding case:" << endl;
-    for (int i = 0; i < climbMatrix.size(); ++i) {
-        out << "Character " << i << " is encoded to " << bestMatrix[i][i] << endl;
-        }
-    out << "Total score: " << bestScore << endl;
-    out.close();
+    return bestKey;
     }

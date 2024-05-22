@@ -11,10 +11,10 @@
 1695845940 source:/home/duy/My Projects/Crypto/vernam2/tabs.cpp
 	"header.h"
 
-1712943087 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
+1716389510 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
 	"header.h"
 
-1712604246 /home/duy/My Projects/Crypto/vernam3/header.h
+1714820387 /home/duy/My Projects/Crypto/vernam3/header.h
 	<iostream>
 	<fstream>
 	<algorithm>
@@ -27,10 +27,55 @@
 	<chrono>
 	<stdlib.h>
 	<iomanip>
+	"pcg_random.hpp"
+	"pcg_uint128.hpp"
+	"pcg_extras.hpp"
 
 1696713565 source:/home/duy/My Projects/Crypto/vernam3/tabs.cpp
 	"header.h"
 
-1712946879 source:/home/duy/My Projects/Crypto/vernam3/main.cpp
+1716389529 source:/home/duy/My Projects/Crypto/vernam3/main.cpp
 	"header.h"
+
+1649437634 /home/duy/My Projects/Crypto/vernam3/pcg_random.hpp
+	<algorithm>
+	<cinttypes>
+	<cstddef>
+	<cstdlib>
+	<cstring>
+	<cassert>
+	<limits>
+	<iostream>
+	<iterator>
+	<type_traits>
+	<utility>
+	<locale>
+	<new>
+	<stdexcept>
+	"pcg_extras.hpp"
+
+1649437634 /home/duy/My Projects/Crypto/vernam3/pcg_extras.hpp
+	<cinttypes>
+	<cstddef>
+	<cstdlib>
+	<cstring>
+	<cassert>
+	<limits>
+	<iostream>
+	<type_traits>
+	<utility>
+	<locale>
+	<iterator>
+	<cxxabi.h>
+	"pcg_uint128.hpp"
+
+1649437634 /home/duy/My Projects/Crypto/vernam3/pcg_uint128.hpp
+	<cstdint>
+	<cstdio>
+	<cassert>
+	<climits>
+	<utility>
+	<initializer_list>
+	<type_traits>
+	<intrin.h>
 

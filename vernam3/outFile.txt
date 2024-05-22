@@ -63,3 +63,5 @@
  ờ â   ứ ỷ ễ c 2 y ấ ỏ ư g ị ã ử a b ơ ẻ ờ ở + ồ ể ỗ ( / ẻ ? ọ ẻ ẽ 6 ứ q l ẩ l ỡ
  ớ á ! ủ ỹ ể d 3 x ả ố ạ e ọ è ừ b a ũ ẽ ớ ỡ * ổ ễ ộ ) . ẽ > ị ẽ ẻ 7 ủ r k ầ k ở
 
+Best encoding case:
+Total score: 0

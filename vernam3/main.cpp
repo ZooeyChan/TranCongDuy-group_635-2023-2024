@@ -17,12 +17,11 @@ int main() {
 //        freq_analysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
 //        vernam_crypt(mpCharBit, mpBitChar, "code.txt", "key", "decode.txt", false);
 //        freq_analysis_key("key", "analysis_key.txt");
-        codeAnalysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
+//        codeAnalysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
 
 //        multimap<ull, pair<wchar_t, wchar_t>, decltype(&compare)> map_bigrams(&compare);
 //        countBigrams(map_bigrams, "plain_viet.txt", "bigrams.txt");
 //        decrypt("code.txt", "outFile.txt", climbMatrix);
-//        hillClimbing(map_bigrams, climbMatrix);
         }
     catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;

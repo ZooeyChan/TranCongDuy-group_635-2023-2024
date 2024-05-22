@@ -13,6 +13,9 @@
 #include <chrono>
 #include <stdlib.h>
 #include <iomanip>
+#include "pcg_random.hpp"
+#include "pcg_uint128.hpp"
+#include "pcg_extras.hpp"
 
 #define BIT 7
 #define CHARS ((1 << BIT) - 1)
@@ -37,7 +40,7 @@ extern ull Sum;
 bool binSearch(const vector<wchar_t> &symbols, wchar_t x);
 void ftext_to_fbin(const string& fileInput, const string& fileOutput);
 void toVieAlpb(const string& fileInput, const string& fileOutput);
-void gen_vernam_key(const string& fileOutput, ull Count, int pos1, int pos2, int pos3);
+void gen_vernam_key_pcg(const string& fileOutput, ull Count, const int &posNum);
 void gen_vernam_key_rand(const string& fileOutput, ull Count, const int &posNum);
 void vernam_crypt(map<wchar_t, bitset<BIT> >& mpi, unordered_map<bitset<BIT>, wchar_t>& mpo,
                   const string& filePlain, const string& fileKey, const string& fileOut, bool mode);
