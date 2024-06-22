@@ -85,6 +85,23 @@ void toVieAlpb(const string& fileInput, const string& fileOutput) {
 //    out.close();
 //    }
 
+void gen_vernam_key(const string& fileOutput, ull Count, int pos1, int pos2, int pos3) {
+    ofstream out(fileOutput, ios::binary | ios::trunc);
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<uint8_t> distribution(0, CHARS);
+    uint8_t ch;
+    while (Count--) {
+        ch = distribution(gen);
+        // đặt bit tại vị trí position bằng 0(position ignored in gamma)
+        ch &= ~(1 << pos1);
+        ch &= ~(1 << pos2);
+        ch &= ~(1 << pos3);
+        out.write(reinterpret_cast<const char*>(&ch), sizeof(uint8_t));
+        }
+    out.close();
+    }
+
 void gen_vernam_key_rand(const string& fileOutput, ull Count, const int &posNum) {
     ofstream out(fileOutput, ios::binary | ios::trunc);
     random_device rd;
@@ -97,6 +114,7 @@ void gen_vernam_key_rand(const string& fileOutput, ull Count, const int &posNum)
         pos[i] = gen() % 7; // Generate random numbers from 0 to 6
         cout << pos[i] << " ";
         }
+    cout << endl;
     while (Count--) {
         ch = distribution(gen);
         temp = posNum;
@@ -366,8 +384,15 @@ size_t round_off(double N, const double &n) {
     return j;
     }
 
-void codeAnalysis(const string& fileInput, const string& fileOutput, ull &Count, ull &Sum) {
+size_t lam_tron(size_t number, const int &k) {
+    size_t factor = static_cast<size_t>(pow(10, k));
+    size_t rounded_number = (number / factor) * factor;
+    return rounded_number;
+    }
+
+void codeAnalysis2(const string& fileInput, const string& fileOutput, ull &Count, ull &Sum) {
     map<wchar_t, ull> mp;
+    set<size_t> uniqueNumbers;
     wifstream inputFile(fileInput);
     if (!inputFile.is_open()) {
         cerr << "Input error!!!" << endl;
@@ -385,21 +410,27 @@ void codeAnalysis(const string& fileInput, const string& fileOutput, ull &Count,
             if (binSearch(symbols, tolower(c))) {
                 mp[tolower(c)]++;
                 Sum++;
-                if(c != L' ') Count++;
+                if (c != L' ') Count++;
                 }
             }
         }
-    short dem = 1;
-    size_t tmp = round_off(mp.begin()->second, 1);
+    short k = 3;
+    short dem1 = 1;
+    size_t tmp = lam_tron(mp.begin()->second, k);
     for (const auto &c : mp) {
-        size_t current = round_off(double(c.second), 2);
+        size_t current = lam_tron(c.second, k);
+        uniqueNumbers.insert(current);
         cout << current << endl;
         if (current != tmp) {
             tmp = current;
-            dem++;
+            dem1 ++;
             }
         }
-    outputFile << "\nThe missing bit in the Vernam key is at position: " << log2(pow(2, BIT) / dem);
+    if(log2(pow(2, BIT) / dem1) < 0.1){
+        outputFile << "\nThe first missing bit in the Vernam key is at position: " << '0';
+    }
+    else outputFile << "\nThe first missing bit in the Vernam key is at position: " << ceil(log2(pow(2, BIT) / dem1));
+    outputFile << "\nTotal missing bit in the Vernam key: " << int(log2(uniqueNumbers.size()));
     inputFile.close();
     outputFile.close();
     }

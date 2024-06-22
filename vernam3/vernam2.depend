@@ -11,12 +11,12 @@
 1695845940 source:/home/duy/My Projects/Crypto/vernam2/tabs.cpp
 	"header.h"
 
-1716402937 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
+1719046538 source:/home/duy/My Projects/Crypto/vernam3/functions.cpp
 	"header.h"
 	"monograms.h"
 	"tetragrams.h"
 
-1716402443 /home/duy/My Projects/Crypto/vernam3/header.h
+1719046573 /home/duy/My Projects/Crypto/vernam3/header.h
 	<iostream>
 	<fstream>
 	<algorithm>
@@ -27,6 +27,7 @@
 	<random>
 	<limits>
 	<chrono>
+	<set>
 	<stdlib.h>
 	<iomanip>
 	"pcg_random.hpp"
@@ -36,7 +37,7 @@
 1696713565 source:/home/duy/My Projects/Crypto/vernam3/tabs.cpp
 	"header.h"
 
-1716389529 source:/home/duy/My Projects/Crypto/vernam3/main.cpp
+1719046552 source:/home/duy/My Projects/Crypto/vernam3/main.cpp
 	"header.h"
 
 1649437634 /home/duy/My Projects/Crypto/vernam3/pcg_random.hpp

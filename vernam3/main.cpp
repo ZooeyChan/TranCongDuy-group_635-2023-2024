@@ -8,16 +8,16 @@ int main() {
     locale::global(locale("vi_VN.utf8"));
 
     try {
-////        sort(symbols.begin(), symbols.end());
-////        toVieAlpb("plain.txt", "plain_viet.txt");
-//        freq_analysis("plain_viet.txt", "analysis_plain.txt", Count, Sum);
-//        gen_vernam_key("key", Sum, 7, 2, 7);
-////        gen_vernam_key_rand("key", Sum, 3);
-//        vernam_crypt(mpCharBit, mpBitChar, "plain_viet.txt", "key", "code.txt", true);
-//        freq_analysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
-//        vernam_crypt(mpCharBit, mpBitChar, "code.txt", "key", "decode.txt", false);
-//        freq_analysis_key("key", "analysis_key.txt");
-//        codeAnalysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
+//        sort(symbols.begin(), symbols.end());
+//        toVieAlpb("plain.txt", "plain_viet.txt");
+        freq_analysis("plain_viet.txt", "analysis_plain.txt", Count, Sum);
+        gen_vernam_key("key", Sum, 1, 3, 2);
+//        gen_vernam_key_rand("key", Sum, 3);
+        vernam_crypt(mpCharBit, mpBitChar, "plain_viet.txt", "key", "code.txt", true);
+        freq_analysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
+        vernam_crypt(mpCharBit, mpBitChar, "code.txt", "key", "decode.txt", false);
+        freq_analysis_key("key", "analysis_key.txt");
+        codeAnalysis2("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
 
 //        multimap<ull, pair<wchar_t, wchar_t>, decltype(&compare)> map_bigrams(&compare);
 //        countBigrams(map_bigrams, "plain_viet.txt", "bigrams.txt");
