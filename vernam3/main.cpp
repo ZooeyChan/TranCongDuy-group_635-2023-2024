@@ -8,11 +8,11 @@ int main() {
     locale::global(locale("vi_VN.utf8"));
 
     try {
-//        sort(symbols.begin(), symbols.end());
-//        toVieAlpb("plain.txt", "plain_viet.txt");
+////        sort(symbols.begin(), symbols.end());
+////        toVieAlpb("plain.txt", "plain_viet.txt");
         freq_analysis("plain_viet.txt", "analysis_plain.txt", Count, Sum);
-        gen_vernam_key("key", Sum, 1, 3, 2);
-//        gen_vernam_key_rand("key", Sum, 3);
+//        gen_vernam_key("key", Sum, 7, 7, 7, 7, 5, 7);
+        gen_vernam_key_rand("key", Sum, 3);
         vernam_crypt(mpCharBit, mpBitChar, "plain_viet.txt", "key", "code.txt", true);
         freq_analysis("code.txt", "analysis_code.txt", Count= 0, Sum= 0);
         vernam_crypt(mpCharBit, mpBitChar, "code.txt", "key", "decode.txt", false);
@@ -22,6 +22,11 @@ int main() {
 //        multimap<ull, pair<wchar_t, wchar_t>, decltype(&compare)> map_bigrams(&compare);
 //        countBigrams(map_bigrams, "plain_viet.txt", "bigrams.txt");
 //        decrypt("code.txt", "outFile.txt", climbMatrix);
+
+//        wchar_t ciphertext[MAXTEXTLEN] = L"ởp7ọ}mộặổ ệ;hẻ.ỵ{aẳếvo&càị ẩgưềhỡạtoỳìxr";
+//        srand(time(0));
+//        hill_climbing_attack(ciphertext);
+
         }
     catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;
@@ -29,5 +34,6 @@ int main() {
     auto finish = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = finish - start;
     cout << "\nProgram execution time: " << duration.count() << " seconds" << endl;
+
     return 0;
     }

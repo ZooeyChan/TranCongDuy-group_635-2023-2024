@@ -61,31 +61,7 @@ void toVieAlpb(const string& fileInput, const string& fileOutput) {
     out.close();
     }
 
-//void gen_vernam_key_pcg(const string& fileOutput, ull Count, const int &posNum) {
-//    ofstream out(fileOutput, ios::binary | ios::trunc);
-//    pcg32 rng(pcg_extras::seed_seq_from<random_device>());
-//    uniform_int_distribution<uint8_t> distribution(0, CHARS);
-//    uint8_t ch;
-//    int temp;
-//    int pos[posNum];
-//    // Sinh số ngẫu nhiên cho vị trí bit
-//    for (int i = 0; i < posNum; i++) {
-//        pos[i] = rng() % 7;
-//        cout << pos[i] << " ";
-//        }
-//    // Sinh khóa ngẫu nhiên
-//    while (Count--) {
-//        ch = distribution(rng);
-//        temp = posNum;
-//        for (int i = 0; i < posNum; i++) {
-//            ch &= ~(1 << pos[i]);
-//            }
-//        out.write(reinterpret_cast<const char*>(&ch), sizeof(uint8_t));
-//        }
-//    out.close();
-//    }
-
-void gen_vernam_key(const string& fileOutput, ull Count, int pos1, int pos2, int pos3) {
+void gen_vernam_key(const string& fileOutput, ull Count, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6) {
     ofstream out(fileOutput, ios::binary | ios::trunc);
     random_device rd;
     mt19937 gen(rd());
@@ -97,6 +73,9 @@ void gen_vernam_key(const string& fileOutput, ull Count, int pos1, int pos2, int
         ch &= ~(1 << pos1);
         ch &= ~(1 << pos2);
         ch &= ~(1 << pos3);
+        ch &= ~(1 << pos4);
+        ch &= ~(1 << pos5);
+        ch &= ~(1 << pos6);
         out.write(reinterpret_cast<const char*>(&ch), sizeof(uint8_t));
         }
     out.close();
@@ -284,7 +263,7 @@ void assignMap(const size_t &stride, map<wchar_t, bitset<BIT> > &tmp) {
         for (size_t i = 0; i < stride && index < symbols.size(); ++i) {
             wchar_t key = symbols[index];
             tmp[key] = mpCharBit.at(key);
-            ++index; // Increase index by 1 after each iteration
+            ++index;
             }
         index += stride; // Bỏ qua stride phần tử tiếp theo
         }
@@ -327,7 +306,7 @@ void decrypt(const string &codeFile, const string &outFile, vector<array<wchar_t
 //        tmp[key] = mpCharBit[key];
 //        }
     // stride = 2^pos, pos: position ignored in gamma.
-    assignMap(32, tmp);
+    assignMap(2, tmp);
     wifstream in(codeFile);
     if (!in.is_open()) {
         cerr << "Input file error!!!" << endl;
@@ -426,55 +405,119 @@ void codeAnalysis2(const string& fileInput, const string& fileOutput, ull &Count
             dem1 ++;
             }
         }
-    if(log2(pow(2, BIT) / dem1) < 0.1){
+    if(log2(pow(2, BIT) / dem1) < 0.1) {
         outputFile << "\nThe first missing bit in the Vernam key is at position: " << '0';
-    }
+        }
     else outputFile << "\nThe first missing bit in the Vernam key is at position: " << ceil(log2(pow(2, BIT) / dem1));
     outputFile << "\nTotal missing bit in the Vernam key: " << int(log2(uniqueNumbers.size()));
     inputFile.close();
     outputFile.close();
     }
 
-/*---------------------DEMO FOR ENGLISH -----------------------------*/
-wchar_t bitToChar(const bitset<BIT>& b) {
-    for (const auto& pair : mpCharBit) {
-        if (pair.second == b) {
-            return pair.first;
+void findCycleLengths(const string& s) {
+    int n = s.size();
+    for (int len = 1; len <= n / 2; len *= 2) {
+        bool isCycle = true;
+        for (int i = 0; i < len; ++i) {
+            if (i + len < n && s[i] != s[i + len]) {
+                isCycle = false;
+                break;
+                }
+            }
+        if (!isCycle) {
+            cout << len << " ";
             }
         }
-    return L'?'; // Default character if bitset not found
+    cout << endl;
     }
+//    string s = "1122334411223344556677885566778811223344112233445566778855667788";
+//    string s = "1122112233443344112211223344334455555555667766775555555566776677";
+//void codeAnalysis3(const string& fileInput, const string& fileOutput, ull &Count, ull &Sum) {
+//    map<wchar_t, ull> mp;
+//    set<size_t> uniqueNumbers;
+//    wifstream inputFile(fileInput);
+//    if (!inputFile.is_open()) {
+//        cerr << "Input error!!!" << endl;
+//        return;
+//        }
+//    wofstream outputFile(fileOutput, ios::app);
+//    if (!outputFile.is_open()) {
+//        cerr << "Output error!!!" << endl;
+//        inputFile.close();
+//        return;
+//        }
+//    wstring str;
+//    while (getline(inputFile, str)) {
+//        for (wchar_t c : str) {
+//            if (binSearch(symbols, tolower(c))) {
+//                mp[tolower(c)]++;
+//                Sum++;
+//                if (c != L' ') Count++;
+//                }
+//            }
+//        }
+//    string s[128] = "";
+//    int tmp = lam_tron(mp.begin()->second, k);
+//    for (const auto &c : mp) {
+//        int current = lam_tron(c.second, k);
+//        s += to_string(current);
+//        }
+//
+//    inputFile.close();
+//    outputFile.close();
+//    }
 
-// Text relevance, based on tetragram frequency
-double fitness(const char* text) {
-    extern double tetragrams[];
-    int length, dem = 0;
-    double result = 0.0;
+/*---------------------DEMO-----------------------------*/
 
-    length = strlen(text);
-    for (int i = 0; i < length - 3; i++) {
-        result += tetragrams[(text[i + 0] - 'A') * 26 * 26 * 26
-                                                 + (text[i + 1] - 'A') * 26 * 26
-                                                 + (text[i + 2] - 'A') * 26
-                                                 + (text[i + 3] - 'A')];
-        dem++;
+wchar_t bitToChar(const bitset<BIT>& b) {
+    auto it = mpBitChar.find(b);
+    if (it != mpBitChar.end()) {
+        return it->second;
         }
-    return result / dem;
+    return L'?';
     }
 
-// Decryption function for XOR-based encryption
+double fitness(const wchar_t* text) {
+    int length, dem = 0;
+    double result = 0;
+    length = wcslen(text);
+    if (length < 4) {
+        return 0;
+        }
+    for (int i = 0; i < length - 3; i++) {
+        int index = (mpCharBit[text[i + 0]].to_ulong() * 26 * 26 * 26) +
+                    (mpCharBit[text[i + 1]].to_ulong() * 26 * 26) +
+                    (mpCharBit[text[i + 2]].to_ulong() * 26) +
+                    (mpCharBit[text[i + 3]].to_ulong());
+        if (index >= 0 && index < 26 * 26 * 26 * 26) {
+            result += tetragrams[index];
+            dem++;
+            }
+        }
+    if (dem > 0) {
+        return result / dem;
+        }
+    else {
+        return 0;
+        }
+    }
+
 void decrypt(const wchar_t* c, wchar_t* p, const wchar_t* key) {
     int length = wcslen(c);
     for (int i = 0; i < length; i++) {
         bitset<BIT> c_bit = mpCharBit[c[i]];
         bitset<BIT> k_bit = mpCharBit[key[i]];
         bitset<BIT> p_bit = c_bit ^ k_bit;
-        p[i] = bitToChar(p_bit);
+        if (mpBitChar.find(p_bit) != mpBitChar.end()) {
+            p[i] = mpBitChar[p_bit];
+            }
+        else {
+            p[i] = L'?'; // Lỗi
+            }
         }
     p[length] = L'\0';
     }
 
-// Generate a random key of the same length as the text
 void random_key(wchar_t* key, int length) {
     vector<wchar_t> chars;
     for (const auto& pair : mpCharBit) {
@@ -483,13 +526,14 @@ void random_key(wchar_t* key, int length) {
     for (int i = 0; i < length; i++) {
         key[i] = chars[rand() % chars.size()];
         }
+    key[length] = L'\0'; // chuỗi kết thúc bằng ký tự null
     }
 
-// Copy key
 void copy_key(const wchar_t* source, wchar_t* target, int length) {
     for (int i = 0; i < length; i++) {
         target[i] = source[i];
         }
+    target[length] = L'\0';
     }
 
 void hill_climbing_attack(const wchar_t* ciphertext) {
@@ -499,31 +543,31 @@ void hill_climbing_attack(const wchar_t* ciphertext) {
     wchar_t best_plaintext[MAXTEXTLEN];
     wchar_t best_key[MAXTEXTLEN];
     double parent_fitness, child_fitness, best_fitness;
-    long int count, bigcount = 0;
+    long int dem, bigcount = 0;
     int length = wcslen(ciphertext);
-
     random_key(parent_key, length);
     decrypt(ciphertext, plaintext, parent_key);
-    best_fitness = fitness(reinterpret_cast<char*>(plaintext));
-
-    while (bigcount < 1000000) {
+    best_fitness = fitness(plaintext);
+    while (bigcount < 1000000 * 40) {
         random_key(parent_key, length);
         decrypt(ciphertext, plaintext, parent_key);
-        parent_fitness = fitness(reinterpret_cast<char*>(plaintext));
-        count = 0;
-        while (count < 1000) {
+        parent_fitness = fitness(plaintext);
+        dem = 0;
+        while (dem < 1000) {
             copy_key(parent_key, child_key, length);
             int pos = rand() % length;
-            child_key[pos] = mpCharBit.begin()->first; // Randomly change a character in the key
+            auto it = mpCharBit.begin();
+            advance(it, rand() % mpCharBit.size());
+            child_key[pos] = it->first;
             decrypt(ciphertext, plaintext, child_key);
-            child_fitness = fitness(reinterpret_cast<char*>(plaintext));
+            child_fitness = fitness(plaintext);
             if (child_fitness > parent_fitness) {
                 copy_key(child_key, parent_key, length);
                 parent_fitness = child_fitness;
-                count = 0;
+                dem = 0;
                 }
             else {
-                count++;
+                dem++;
                 }
             if (child_fitness > best_fitness) {
                 copy_key(child_key, best_key, length);
@@ -540,10 +584,3 @@ void hill_climbing_attack(const wchar_t* ciphertext) {
     wcout << L"Key: " << best_key << endl;
     wcout << L"Fitness: " << best_fitness << endl;
     }
-
-//int main() {
-//    wchar_t ciphertext[MAXTEXTLEN] = L"ciphertext_here";
-//    srand(time(0));
-//    hill_climbing_attack(ciphertext);
-//    return 0;
-//    }
